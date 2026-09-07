@@ -71,7 +71,7 @@ class Biblioteca:
         raise UsuarioNaoEncontrado(f"Usuario {id_usuario} não encontrado.")
 
     def emprestar_livro(self, id_usuario, titulo):
-        livro = self.consultar_livro(titulo=titulo)
+        livro = self.consultar_titulo(titulo=titulo)
         usuario = self.consultar_usuario(id_usuario=id_usuario)
         livro.diminuir_copia()
         emprestimo = {"usuario": usuario, "livro": livro}

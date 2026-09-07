@@ -1,6 +1,7 @@
 from excecoes import (LivroIndisponivelError, LivroJaCadastradoError,
                        UsuarioJaCadastradoError, LivroNaoEncontradoError,
-                       UsuarioNaoEncontrado)
+                       UsuarioNaoEncontrado, EmprestimoNaoEncontradoError,
+                       DevolucaoError)
 
 
 class Livro:
@@ -21,6 +22,11 @@ class Livro:
         if not self.estou_disponivel():
             raise LivroIndisponivelError(f"{self.titulo} não está disponível.")
         self.copias_disponiveis -= 1
+
+    def aumentar_copia(self):
+        if self.copias_disponiveis >= self.copias_totais:
+            raise DevolucaoError("Erro na devolução.")
+        self.copias_disponiveis += 1    
 
     def __repr__(self):
         return f"- Título: {self.titulo}\n- Autor: {self.autor}\n- Ano de lançamento: {self.ano}\n - Copias disponíveis: {self.copias_disponiveis}"
@@ -54,7 +60,7 @@ class Biblioteca:
         novo_usuario = Usuario(nome=nome, id_usuario=id_usuario, telefone=telefone)
         self.usuarios[id_usuario] = novo_usuario
 
-    def consultar_livro(self, titulo):
+    def consultar_titulo(self, titulo):
         if titulo in self.livros:
             return self.livros[titulo]
         raise LivroNaoEncontradoError(f"Livro {titulo} não encontrado.")
@@ -72,12 +78,36 @@ class Biblioteca:
         self.emprestimos[(id_usuario, titulo)] = emprestimo
         return emprestimo
 
+    def devolver_livro(self, id_usuario, titulo):
+        if (id_usuario, titulo) not in self.emprestimos:
+            raise EmprestimoNaoEncontradoError("Emprestimo não encontrado.")
+        registro = self.emprestimos.pop((id_usuario, titulo))
+        livro = registro["livro"]
+        livro.aumentar_copia()
 
-b = Biblioteca()
-b.cadastrar_livro("jj", "jk", 2000, 2)
-b.cadastrar_usuario("Luiz", "20", "12974122409")
-b.emprestar_livro("20", "jj")
+    def consultar_autor(self, autor):
+        lista = []
+        for livro in self.livros.values():
+            if autor == livro.autor:
+                lista.append(livro)
+        return lista
 
-print(b.livros["jj"].copias_disponiveis)   # espera 1
-print(len(b.emprestimos))                   # espera 1
-print(b.emprestimos[("20", "jj")])          # espera o dict do emprestimo
+    def consultar_ano(self, ano):
+        lista = []
+        for livro in self.livros.values():
+            if ano == livro.ano:
+                lista.append(livro)
+        return lista
+
+    def relatorio_emprestados(self):
+        return list(self.emprestimos.values())
+
+    def relatorio_disponiveis(self):
+        disponiveis = []
+        for livro in self.livros.values():
+            if livro.estou_disponivel():
+                disponiveis.append(livro)
+        return disponiveis
+
+    def relatorio_usuarios(self):
+        return list(self.usuarios.values())

@@ -16,3 +16,11 @@ class UsuarioNaoEncontrado(Exception):
 
 class LivroNaoEncontradoError(Exception):
     pass
+
+
+class DevolucaoError(Exception):
+    pass
+
+
+class EmprestimoNaoEncontradoError(Exception):
+    pass

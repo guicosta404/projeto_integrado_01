@@ -1,4 +1,6 @@
-from excecoes import LivroIndisponivelError, LivroJaCadastradoError, UsuarioJaCadastradoError
+from excecoes import (LivroIndisponivelError, LivroJaCadastradoError,
+                       UsuarioJaCadastradoError, LivroNaoEncontradoError,
+                       UsuarioNaoEncontrado)
 
 
 class Livro:
@@ -20,8 +22,8 @@ class Livro:
             raise LivroIndisponivelError(f"{self.titulo} não está disponível.")
         self.copias_disponiveis -= 1
 
-    def __str__(self):
-        return f"- Título: {self.titulo}\n- Autor: {self.autor}\n- Ano de lançamento: {self.ano}"
+    def __repr__(self):
+        return f"- Título: {self.titulo}\n- Autor: {self.autor}\n- Ano de lançamento: {self.ano}\n - Copias disponíveis: {self.copias_disponiveis}"
 
 
 class Usuario:
@@ -30,7 +32,7 @@ class Usuario:
         self.id_usuario = id_usuario
         self.telefone = telefone
 
-    def __str__(self):
+    def __repr__(self):
         return f"Nome: {self.nome} - ID: {self.id_usuario} - Tel.: {self.telefone}"
 
 
@@ -52,6 +54,30 @@ class Biblioteca:
         novo_usuario = Usuario(nome=nome, id_usuario=id_usuario, telefone=telefone)
         self.usuarios[id_usuario] = novo_usuario
 
+    def consultar_livro(self, titulo):
+        if titulo in self.livros:
+            return self.livros[titulo]
+        raise LivroNaoEncontradoError(f"Livro {titulo} não encontrado.")
+
+    def consultar_usuario(self, id_usuario):
+        if id_usuario in self.usuarios:
+            return self.usuarios[id_usuario]
+        raise UsuarioNaoEncontrado(f"Usuario {id_usuario} não encontrado.")
+
+    def emprestar_livro(self, id_usuario, titulo):
+        livro = self.consultar_livro(titulo=titulo)
+        usuario = self.consultar_usuario(id_usuario=id_usuario)
+        livro.diminuir_copia()
+        emprestimo = {"usuario": usuario, "livro": livro}
+        self.emprestimos[(id_usuario, titulo)] = emprestimo
+        return emprestimo
+
+
 b = Biblioteca()
 b.cadastrar_livro("jj", "jk", 2000, 2)
-b.cadastrar_livro("jj", "jk", 2000, 2)
+b.cadastrar_usuario("Luiz", "20", "12974122409")
+b.emprestar_livro("20", "jj")
+
+print(b.livros["jj"].copias_disponiveis)   # espera 1
+print(len(b.emprestimos))                   # espera 1
+print(b.emprestimos[("20", "jj")])          # espera o dict do emprestimo

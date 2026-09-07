@@ -8,3 +8,11 @@ class LivroJaCadastradoError(Exception):
 
 class UsuarioJaCadastradoError(Exception):
     pass
+
+
+class UsuarioNaoEncontrado(Exception):
+    pass
+
+
+class LivroNaoEncontradoError(Exception):
+    pass

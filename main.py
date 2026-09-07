@@ -1,4 +1,4 @@
-from excecoes import LivroIndisponivelError
+from excecoes import LivroIndisponivelError, UsuarioJaCadastradoError
 
 
 class Livro:
@@ -33,3 +33,24 @@ class Usuario:
     def __str__(self):
         return f"Nome: {self.nome} - ID: {self.id_usuario} - Tel.: {self.telefone}"
 
+
+class Biblioteca:
+    def __init__(self):
+        self.livros = {}
+        self.usuarios = {}
+        self.emprestimos = {}
+
+    def cadastrar_livro(self, titulo, autor, ano, copias):
+        novo_livro = Livro(titulo=titulo, autor=autor, ano=ano, copias_totais=copias)
+        self.livros[titulo] = novo_livro
+
+    def cadastrar_usuario(self, nome, id_usuario, telefone):
+        if id_usuario in self.usuarios:
+            raise UsuarioJaCadastradoError(f"ID {id_usuario} já cadastrado.")
+        novo_usuario = Usuario(nome=nome, id_usuario=id_usuario, telefone=telefone)
+        self.usuarios[id_usuario] = novo_usuario
+
+b = Biblioteca()
+b.cadastrar_usuario("Luiz", "20", "12974122409")
+b.cadastrar_usuario("Luiz", "20", "12974122409")
+print(b.usuarios["20"])

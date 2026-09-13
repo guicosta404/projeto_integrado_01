@@ -51,18 +51,33 @@ def main():
 # Cadastrar usuário
         if opt == 2:
             nome = str(input("Digite o nome de usuário: ").strip())
-            try:
-                id_usuario = int(input("Digite o id único de usuário: "))
-            except ValueError:
-                print("Digite somente números inteiros.")
-                continue
+            id_usuario = str(input("Digite o id único de usuário: ").strip())
             telefone = str(input("Digite o número de telefone: ").strip())
             try:
                 lib.cadastrar_usuario(nome=nome, id_usuario=id_usuario, telefone=telefone)
                 print("Usuário cadastrado com sucesso!")
             except UsuarioJaCadastradoError as e:
                 print(e)
-                    
+
+# Emprestar livro
+        if opt == 3:
+            id_usuario = str(input("Digite seu id: ").strip())
+            titulo = str(input("Digite o nome do livro: ").strip())
+            try:
+                lib.emprestar_livro(id_usuario=id_usuario, titulo=titulo)
+                print("Empréstimo realizado com sucesso.")
+            except (LivroNaoEncontradoError, UsuarioNaoEncontrado, LivroIndisponivelError) as e:
+                print(e)
+
+# Devolver livro
+        if opt == 4:
+            id_usuario = str(input("Digite seu id: ").strip())
+            titulo = str(input("Digite o nome do livro: ").strip())
+            try:
+                lib.devolver_livro(id_usuario=id_usuario, titulo=titulo)
+                print("Livro devolvido com sucesso.")
+            except (DevolucaoError, EmprestimoNaoEncontradoError) as e:
+                print(e)
 
 if __name__ == "__main__":
     main()

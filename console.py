@@ -127,6 +127,23 @@ def main():
                 
 # Relatório
 
+        if opt == 6:
+            print("""Relatórios:
+1 - Livros disponíveis para empréstimo
+2 - Livros emprestados
+3 - Lista de usuários
+0 - Sair""")
+            try:
+                escolha = int(input("Digite a opção: "))
+            except ValueError:
+                print("Digite somente números")
+                continue
+            if escolha == 1:
+                print(lib.relatorio_disponiveis())
+            if escolha == 2:
+                print(lib.relatorio_emprestados())
+            if escolha == 3:
+                print(lib.relatorio_usuarios())
 
 if __name__ == "__main__":
     main()

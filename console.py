@@ -79,5 +79,54 @@ def main():
             except (DevolucaoError, EmprestimoNaoEncontradoError) as e:
                 print(e)
 
+# Consultar
+        if opt == 5:
+            print("""Consultar:
+1 - Ano de lançamento
+2 - Título do livro
+3 - Autor(a)
+4 - Consultar usuário 
+0 - Sair""")
+            try:
+                escolha = int(input("Digite a opção: "))
+            except ValueError:
+                print("Digite somente números.")
+                continue
+            if escolha == 1:
+                try:
+                    ano = int(input("Digite o ano de lançamento: "))
+                    result = lib.consultar_ano(ano=ano)
+                    if result:
+                        print(result)
+                    else: 
+                        print(f"Nenhum livro encontrado com lançamento em {ano}")
+                except ValueError:
+                    print("Digite somente números inteiros.")
+
+            if escolha == 2:
+                titulo = str(input("Digite o título do livro: "))
+                try:
+                    print(lib.consultar_titulo(titulo=titulo))
+                except LivroNaoEncontradoError as e:
+                    print(e)     
+    
+            if escolha == 3:
+                autor =  str(input("Digite o nome do autor(a): "))
+                result = lib.consultar_autor(autor=autor)
+                if result:
+                    print(result)
+                else:
+                    print(f"Nenhum livro encontrado para o autor {autor}.")    
+
+            if escolha == 4:
+                id_usuario = str(input("Digite o id do usuário: ").strip())
+                try:
+                    print(lib.consultar_usuario(id_usuario=id_usuario))
+                except UsuarioNaoEncontrado as e:
+                    print(e)
+                
+# Relatório
+
+
 if __name__ == "__main__":
     main()
